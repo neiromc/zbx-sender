@@ -1,7 +1,7 @@
 <h2>Zabbix Server Sender Library</h2>
 
 This is a simple java library for sending data to Zabbix Trapper.</br>
-**JAR Library:** ./out/artifacts/zabbix_server/zabbix_server-X.X.X.jar
+**JAR Library:** ./out/artifacts/zabbix_server/gmZabbixServerSender-X.X.X.jar
 
 <h3>Examples</h3>
 
