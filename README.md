@@ -1,4 +1,4 @@
-**Zabbix Server Sender Library**
+<h4>Zabbix Server Sender Library</h4>
 
 This is a simple java library for sending data to Zabbix Trapper.
 
