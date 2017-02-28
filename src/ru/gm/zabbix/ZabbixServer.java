@@ -5,9 +5,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ZabbixServer {
+
+    private Socket clientSocket = null;
+    private DataOutputStream dataOutputStream;
+
     private String ip;
     private int port;
     private int connTimeout;
@@ -20,53 +26,85 @@ public class ZabbixServer {
         this.connTimeout = connTimeout;
     }
 
-    public void connectAndSend(final String hostname,
-                               final String key,
-                               final String value) {
+    public void connect() throws IOException {
+        clientSocket = new Socket();
+        clientSocket.connect(
+                new InetSocketAddress(ip, port),
+                connTimeout
+        );
 
-        Socket clientSocket = null;
-
-        try {
-            clientSocket = new Socket();
-            clientSocket.connect(
-                    new InetSocketAddress(ip, port),
-                    connTimeout
-            );
-
-            DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
-
-            //build JSON report for sending in Zabbix
-            String report = buildJSONString(hostname, key, value);
-
-            try {
-                writeMessage(dos, report.getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (clientSocket != null) {
-                try {
-                    clientSocket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
+        dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
     }
 
-    private String buildJSONString(String host, String key, String value)
-    {
-        return 		  "{"
-                + "\"request\":\"sender data\",\n"
-                + "\"data\":[\n"
-                +        "{\n"
-                +                "\"host\":\"" + host + "\",\n"
-                +                "\"key\":\"" + key + "\",\n"
-                +                "\"value\":\"" + value.replace("\\", "\\\\") + "\"}]}\n" ;
+    public void close() throws IOException {
+        if (clientSocket != null) {
+            clientSocket.close();
+        }
+    }
+
+    public void connectAndSend(ZabbixObject metric) {
+        //build JSON report for sending in Zabbix
+        String report = buildJSONString(metric);
+
+        try {
+            writeMessage(dataOutputStream, report.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected String buildJSONString(ZabbixObject zabbixObject) {
+        String jsonHeader = "{\n\t\"request\":\"sender data\",\n\t\"data\":[\n";
+        String jsonFooter = "\t]\n}\n";
+
+        return String.format("%s\t\t{\"host\":\"%s\",\"key\":\"%s\",\"value\":\"%s\"}\n%s",
+                jsonHeader,
+                zabbixObject.getHostname(),
+                zabbixObject.getKey(),
+                zabbixObject.getValue(),
+                jsonFooter
+        );
+    }
+
+
+    protected String buildJSONString(List<ZabbixObject> objects) {
+        String jsonHeader = "{\n\t\"request\":\"sender data\",\n\t\"data\":[\n";
+        String jsonFooter = "\t]\n}\n";
+        StringBuilder jsonBody = new StringBuilder();
+
+        for (ZabbixObject o : objects) {
+            jsonBody.append(
+                String.format(
+                    "\t\t{\"host\":\"%s\",\"key\":\"%s\",\"value\":\"%s\"}%s\n",
+                    o.getHostname(),
+                    o.getKey(),
+                    o.getValue(),
+                    (o.equals(objects.get(objects.size()-1))) ? "" : ","
+                )
+            );
+
+        }
+
+        jsonBody.insert(0, jsonHeader);
+        jsonBody.append(jsonFooter);
+
+        return jsonBody.toString();
+    }
+
+
+    public static void main(String[] args) {
+        ZabbixServer zs = new ZabbixServer(null, 0, 0);
+        ArrayList<ZabbixObject> metrics = new ArrayList<>();
+        metrics.add(new ZabbixObject("host1", "key1", "val1"));
+        metrics.add(new ZabbixObject("host2", "key2", "val2"));
+        metrics.add(new ZabbixObject("host3", "key3", "val3"));
+        metrics.add(new ZabbixObject("host4", "key4", "val4"));
+        System.out.println(zs.buildJSONString(metrics));
+
+        System.out.println("------------------");
+
+        ZabbixObject zo = new ZabbixObject("host55", "key55", "val55");
+        System.out.println(zs.buildJSONString(zo));
     }
 
     protected void writeMessage(OutputStream out, byte[] data) throws IOException {
