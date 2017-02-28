@@ -26,6 +26,39 @@ public class ZabbixServer {
         this.connTimeout = connTimeout;
     }
 
+
+    public static void main(String[] args) {
+        ZabbixServer zs = new ZabbixServer(null, 0, 0);
+        ArrayList<ZabbixObject> metrics = new ArrayList<>();
+        metrics.add(new ZabbixObject("host1", "key1", "val1"));
+        metrics.add(new ZabbixObject("host2", "key2", "val2"));
+        metrics.add(new ZabbixObject("host3", "key3", "val3"));
+        metrics.add(new ZabbixObject("host4", "key4", "val4"));
+        System.out.println(zs.buildJSONString(metrics));
+
+        ZabbixObject zo = new ZabbixObject("host55", "key55", "val55");
+
+        try {
+            zs.connect();
+            zs.send(zo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (zs.isConnected())
+                try {
+                    zs.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+        }
+
+        System.out.println("------------------");
+
+        System.out.println(zs.buildJSONString(zo));
+    }
+
+
+
     public void connect() throws IOException {
         clientSocket = new Socket();
         clientSocket.connect(
@@ -101,36 +134,6 @@ public class ZabbixServer {
         return jsonBody.toString();
     }
 
-
-    public static void main(String[] args) {
-        ZabbixServer zs = new ZabbixServer(null, 0, 0);
-        ArrayList<ZabbixObject> metrics = new ArrayList<>();
-        metrics.add(new ZabbixObject("host1", "key1", "val1"));
-        metrics.add(new ZabbixObject("host2", "key2", "val2"));
-        metrics.add(new ZabbixObject("host3", "key3", "val3"));
-        metrics.add(new ZabbixObject("host4", "key4", "val4"));
-        System.out.println(zs.buildJSONString(metrics));
-
-        ZabbixObject zo = new ZabbixObject("host55", "key55", "val55");
-
-        try {
-            zs.connect();
-            zs.send(zo);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (zs.isConnected())
-                try {
-                    zs.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-        }
-
-        System.out.println("------------------");
-
-        System.out.println(zs.buildJSONString(zo));
-    }
 
     protected void writeMessage(OutputStream out, byte[] data) throws IOException {
         int length = data.length;
