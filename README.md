@@ -1,5 +1,9 @@
 **Zabbix Server Sender Library**
 
-This is a simple java class for send data to Zabbix Trapper mechanism.
+This is a simple java class for sending data to Zabbix Trapper.
 
-Next release: multimple items value send (bulk data send)
+Coming soon: multimple items value send (bulk data send)
+
+---
+GeekMonkey Lab.
+www.geekmonkey.ru
