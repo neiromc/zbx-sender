@@ -1,11 +1,11 @@
-<h3>Zabbix Server Sender Library</h3>
+<h2>Zabbix Server Sender Library</h2>
 
-This is a simple java library for sending data to Zabbix Trapper.
+This is a simple java library for sending data to Zabbix Trapper.</br>
+**JAR Library:** ./out/artifacts/zabbix_server/zabbix_server-X.X.X.jar
 
+<h3>Examples</h3>
 
-**Examples**
-
-One item send:
+<h4>One item send:</h4>
 <pre><code>ZabbixServer zs = new ZabbixServer("192.168.0.1, 10051, 5000);
 ZabbixObject zo = new ZabbixObject("host1", "key1", "val1");
 try {
@@ -22,7 +22,7 @@ try {
         }
 }</code></pre>
 
-Bulk send:
+<h4>Bulk send:</h4>
 <pre><code>ZabbixServer zs = new ZabbixServer("192.168.0.1, 10051, 5000);
 
 ArrayList<ZabbixObject> metrics = new ArrayList<>();
