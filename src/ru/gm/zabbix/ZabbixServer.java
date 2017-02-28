@@ -42,15 +42,25 @@ public class ZabbixServer {
         }
     }
 
-    public void connectAndSend(ZabbixObject metric) {
-        //build JSON report for sending in Zabbix
-        String report = buildJSONString(metric);
+    public Boolean isConnected() {
+        return ( clientSocket != null );
+    }
 
+    private void sendToZabbix(String jsonString) {
         try {
-            writeMessage(dataOutputStream, report.getBytes());
+            writeMessage(dataOutputStream, jsonString.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public void send(ZabbixObject o) {
+        sendToZabbix(buildJSONString(o));
+    }
+
+    public void send(List<ZabbixObject> o) {
+        sendToZabbix(buildJSONString(o));
     }
 
     protected String buildJSONString(ZabbixObject zabbixObject) {
@@ -101,9 +111,24 @@ public class ZabbixServer {
         metrics.add(new ZabbixObject("host4", "key4", "val4"));
         System.out.println(zs.buildJSONString(metrics));
 
+        ZabbixObject zo = new ZabbixObject("host55", "key55", "val55");
+
+        try {
+            zs.connect();
+            zs.send(zo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (zs.isConnected())
+                try {
+                    zs.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+        }
+
         System.out.println("------------------");
 
-        ZabbixObject zo = new ZabbixObject("host55", "key55", "val55");
         System.out.println(zs.buildJSONString(zo));
     }
 
