@@ -1,4 +1,4 @@
-<h2>Zabbix Server Sender Library</h2>
+<h2>Zbx Sender Library</h2>
 
 This is a simple java library for sending data to Zabbix Trapper.</br>
 **JAR Library:** ./out/artifacts/zabbix_server/gmZabbixServerSender-X.X.X.jar
@@ -44,7 +44,3 @@ try {
             e.printStackTrace();
         }
 }</code></pre>
-
----
-GeekMonkey Lab.</br>
-www.geekmonkey.ru
