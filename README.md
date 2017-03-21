@@ -49,3 +49,7 @@ try {
             e.printStackTrace();
         }
 }</code></pre>
+
+
+<h3>License</h3>
+The MIT License (MIT)
