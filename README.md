@@ -51,5 +51,6 @@ try {
 }</code></pre>
 
 
-<h3>License</h3>
+<h2>License</h2>
+
 The MIT License (MIT)
