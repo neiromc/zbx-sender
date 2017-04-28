@@ -17,7 +17,9 @@ Supported all actual versions of Zabbix Server (1.8 and later).
 ZabbixObject zo = new ZabbixObject("host1", "key1", "val1");
 try {
     zs.connect();
-    zs.send(zo);
+    
+    // send method will return answer from Zabbix Server as String
+    System.out.println(zs.send(zo));
 } catch (IOException e) {
     e.printStackTrace();
 } finally {
@@ -38,7 +40,9 @@ metrics.add(new ZabbixObject("host2", "key2",   "val3"));
 metrics.add(new ZabbixObject("host3", "key3",   "val4"));
 try {
     zs.connect();
-    zs.send(metrics);
+    
+    // send method will return answer from Zabbix Server as String
+    System.out.println(zs.send(metrics));
 } catch (IOException e) {
     e.printStackTrace();
 } finally {
