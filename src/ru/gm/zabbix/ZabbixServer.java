@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 
@@ -53,13 +54,20 @@ public class ZabbixServer {
         try {
             writeMessage(dataOutputStream, jsonString.getBytes());
 
-            StringBuilder sb = new StringBuilder();
-            byte b;
-            while ( (b = dataInputStream.readByte()) >= 0 ) {
-                sb.append(b);
+            byte[] responseData = new byte[512];
+            int rCount = 0;
+
+            int read;
+            while ( (read = dataInputStream.read(responseData, rCount, responseData.length - rCount)) > 0 ) {
+                rCount += read;
             }
-//            return String.valueOf(dataInputStream.readFully());
-            return sb.toString();
+
+            if ( rCount < 13) {
+                return "empty_answer";
+            } else {
+                return new String(responseData, 13, rCount - 13, StandardCharsets.UTF_8);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
