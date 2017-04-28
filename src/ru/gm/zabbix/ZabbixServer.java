@@ -63,7 +63,7 @@ public class ZabbixServer {
             }
 
             if ( rCount < 13) {
-                return "empty_answer";
+                return "empty_answer_array";
             } else {
                 return new String(responseData, 13, rCount - 13, StandardCharsets.UTF_8);
             }
