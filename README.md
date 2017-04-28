@@ -18,7 +18,6 @@ ZabbixObject zo = new ZabbixObject("host1", "key1", "val1");
 try {
     zs.connect();
     
-    // send method will return answer from Zabbix Server as String
     System.out.println(zs.send(zo));
 } catch (IOException e) {
     e.printStackTrace();
@@ -41,7 +40,6 @@ metrics.add(new ZabbixObject("host3", "key3",   "val4"));
 try {
     zs.connect();
     
-    // send method will return answer from Zabbix Server as String
     System.out.println(zs.send(metrics));
 } catch (IOException e) {
     e.printStackTrace();
