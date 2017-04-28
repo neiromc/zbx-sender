@@ -55,8 +55,8 @@ public class ZabbixServer {
 
             StringBuilder sb = new StringBuilder();
             byte b;
-            while ( (b = dataInputStream.readByte()) != -1 ) {
-                sb.append(String.valueOf(b));
+            while ( (b = dataInputStream.readByte()) >= 0 ) {
+                sb.append(b);
             }
 //            return String.valueOf(dataInputStream.readFully());
             return sb.toString();
