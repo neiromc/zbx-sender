@@ -52,7 +52,14 @@ public class ZabbixServer {
     private String sendToZabbix(String jsonString) {
         try {
             writeMessage(dataOutputStream, jsonString.getBytes());
-            return String.valueOf(dataInputStream.readByte());
+
+            StringBuilder sb = new StringBuilder();
+            byte b;
+            while ( (b = dataInputStream.readByte()) != -1 ) {
+                sb.append(String.valueOf(b));
+            }
+//            return String.valueOf(dataInputStream.readFully());
+            return sb.toString();
         } catch (IOException e) {
             e.printStackTrace();
         }
