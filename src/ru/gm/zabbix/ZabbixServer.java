@@ -1,5 +1,6 @@
 package ru.gm.zabbix;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,6 +13,7 @@ public class ZabbixServer {
 
     private Socket clientSocket = null;
     private DataOutputStream dataOutputStream;
+    private DataInputStream dataInputStream;
 
     private String ip;
     private int port;
@@ -34,6 +36,7 @@ public class ZabbixServer {
         );
 
         dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
+        dataInputStream = new DataInputStream(clientSocket.getInputStream());
     }
 
     public void close() throws IOException {
@@ -46,13 +49,15 @@ public class ZabbixServer {
         return ( clientSocket != null );
     }
 
-    private void sendToZabbix(String jsonString) {
+    private String sendToZabbix(String jsonString) {
         try {
             writeMessage(dataOutputStream, jsonString.getBytes());
+            return String.valueOf(dataInputStream.readByte());
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        return null;
     }
 
     public void send(ZabbixObject o) {
