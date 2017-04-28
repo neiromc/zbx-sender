@@ -60,12 +60,12 @@ public class ZabbixServer {
         return null;
     }
 
-    public void send(ZabbixObject o) {
-        sendToZabbix(buildJSONString(o));
+    public String send(ZabbixObject o) {
+        return sendToZabbix(buildJSONString(o));
     }
 
-    public void send(List<ZabbixObject> o) {
-        sendToZabbix(buildJSONString(o));
+    public String send(List<ZabbixObject> o) {
+        return sendToZabbix(buildJSONString(o));
     }
 
     protected String buildJSONString(ZabbixObject zabbixObject) {
